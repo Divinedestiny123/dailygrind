@@ -11,7 +11,6 @@ const config: HardhatUserConfig = {
   solidity: "0.8.20",
   networks: {
     base_sepolia: {
-      type: "http",
       url: "https://sepolia.base.org",
       accounts: [PRIVATE_KEY]
     }
