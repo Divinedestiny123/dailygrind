@@ -31,7 +31,7 @@ export async function POST(req: Request) {
         }
 
         const MAX_RETRIES = 3;
-        let response;
+        let response: Response | undefined;
         let retryCount = 0;
 
         while (retryCount < MAX_RETRIES) {
@@ -94,7 +94,9 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Failed to verify with Venice AI after multiple attempts." }, { status: response.status });
         }
 
-
+        if (!response) {
+            return NextResponse.json({ error: "Failed to connect to Venice AI" }, { status: 500 });
+        }
 
         const data = await response.json();
         const content = data.choices[0]?.message?.content?.trim().toUpperCase();
