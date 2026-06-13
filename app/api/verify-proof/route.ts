@@ -42,7 +42,7 @@ export async function POST(req: Request) {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    model: "qwen3-vl-235b-a22b",
+                    model: "e2ee-qwen3-vl-30b-a3b-p", // Using the 30B model instead of 235B to avoid strict RPM rate limits
                     messages: [
                         {
                             role: "system",
@@ -77,7 +77,8 @@ export async function POST(req: Request) {
             if (response.status === 429 || response.status >= 500) {
                 retryCount++;
                 if (retryCount < MAX_RETRIES) {
-                    await new Promise(resolve => setTimeout(resolve, 2000 * retryCount)); // Exponential-ish backoff
+                    // Increase backoff significantly: 5s, 10s, 15s to respect strict Vision model rate limits
+                    await new Promise(resolve => setTimeout(resolve, 5000 * retryCount)); 
                     continue;
                 }
             }

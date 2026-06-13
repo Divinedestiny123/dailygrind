@@ -5,6 +5,18 @@ import toast from 'react-hot-toast';
 import { createWalletClient, custom, createPublicClient, http, parseUnits, encodeFunctionData } from 'viem';
 import { baseSepolia } from 'viem/chains';
 import { erc7715ProviderActions } from '@metamask/smart-accounts-kit/actions';
+import { MetaMaskSDK } from '@metamask/sdk';
+
+let mmsdk: MetaMaskSDK | null = null;
+if (typeof window !== 'undefined') {
+  mmsdk = new MetaMaskSDK({
+    dappMetadata: {
+      name: "Daily Grind",
+      url: window.location.href,
+    },
+    checkInstallationImmediately: false,
+  });
+}
 
 declare global {
   interface Window {
@@ -30,9 +42,10 @@ export function SmartAccountProvider({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     const checkConnection = async () => {
-      if (typeof window !== 'undefined' && window.ethereum) {
+      const provider = mmsdk?.getProvider();
+      if (provider) {
         try {
-          const accounts = await window.ethereum.request({ method: 'eth_accounts' }) as string[];
+          const accounts = await provider.request({ method: 'eth_accounts' }) as string[];
           if (accounts && accounts.length > 0) {
             setAddress(accounts[0]);
           }
@@ -52,14 +65,15 @@ export function SmartAccountProvider({ children }: { children: React.ReactNode }
   const connectWallet = useCallback(async () => {
     setIsConnecting(true);
     try {
-      if (typeof window === 'undefined' || !window.ethereum) {
-        toast.error("MetaMask is not installed! Please install the browser extension.");
+      const provider = mmsdk?.getProvider();
+      if (!provider) {
+        toast.error("Unable to initialize wallet provider.");
         return;
       }
 
       const walletClient = createWalletClient({
         chain: baseSepolia,
-        transport: custom(window.ethereum)
+        transport: custom(provider)
       });
       
       const [account] = await walletClient.requestAddresses();
@@ -92,7 +106,8 @@ export function SmartAccountProvider({ children }: { children: React.ReactNode }
   ): Promise<{ success: boolean; txHash?: string }> => {
     setIsGranting(true);
     try {
-      if (!window.ethereum) throw new Error("MetaMask not found");
+      const provider = mmsdk?.getProvider();
+      if (!provider) throw new Error("Wallet provider not found");
       if (!address) throw new Error("Wallet not connected");
 
       const publicClient = createPublicClient({
@@ -104,7 +119,7 @@ export function SmartAccountProvider({ children }: { children: React.ReactNode }
       const walletClient = createWalletClient({
         account: address as `0x${string}`,
         chain: baseSepolia,
-        transport: custom(window.ethereum)
+        transport: custom(provider)
       }).extend(erc7715ProviderActions());
 
       const VAULT_ADDRESS = (process.env.NEXT_PUBLIC_VAULT_ADDRESS || "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913") as `0x${string}`;
@@ -198,7 +213,7 @@ export function SmartAccountProvider({ children }: { children: React.ReactNode }
       const txClient = createWalletClient({
         account: address as `0x${string}`,
         chain: baseSepolia,
-        transport: custom(window.ethereum)
+        transport: custom(provider)
       });
 
       const approveHash = await txClient.sendTransaction({
