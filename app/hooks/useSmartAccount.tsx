@@ -65,6 +65,8 @@ export function SmartAccountProvider({ children }: { children: React.ReactNode }
   const connectWallet = useCallback(async () => {
     setIsConnecting(true);
     try {
+      // Must explicitly call connect() to trigger mobile deep link UI or QR modal
+      await mmsdk?.connect();
       const provider = mmsdk?.getProvider();
       if (!provider) {
         toast.error("Unable to initialize wallet provider.");
