@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Daily Grind
 
-## Getting Started
+Daily Grind is an intent-based habit-tracking dApp built on Base Sepolia. It pairs decentralized crypto incentives with autonomous AI verification to help users stick to their goals.
 
-First, run the development server:
+## Smart Accounts Kit Usage
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Since the Hackathon is focused on the Smart Accounts and Delegations, here are the links to our code usage:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Advanced Permissions
+*   **Requesting Advanced Permissions:** [useSmartAccount.tsx](./app/hooks/useSmartAccount.tsx) and [CreateGrindModal.tsx](./app/components/CreateGrindModal.tsx)
+*   **Redeeming Advanced Permissions:** [useSmartAccount.tsx](./app/hooks/useSmartAccount.tsx)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Delegations
+*   **Create Delegation:** [useSmartAccount.tsx](./app/hooks/useSmartAccount.tsx)
+*   **Redeeming Delegation:** [setup-1shot.js](./scripts/setup-1shot.js)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Redelegation
+*   **Creating redelegation:** Not currently implemented in this version.
 
-## Learn More
+### x402
+*   Not currently implemented in this version.
 
-To learn more about Next.js, take a look at the following resources:
+## 1Shot API Usage
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+We used the 1Shot API for seamless on-chain execution for our autonomous agent when verifying and settling Grinds.
+*   **Agent Execution & Resolving Grinds:** [route.ts](./app/api/resolve-grind/route.ts)
+*   **Setup Script:** [setup-1shot.js](./scripts/setup-1shot.js)
+*   **Testing Script:** [test-1shot.js](./scripts/test-1shot.js)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Venice AI Usage
 
-## Deploy on Vercel
+We utilized Venice AI as our autonomous oracle to visually verify user habit completion proofs in real-time.
+*   **Image Verification API Route:** [route.ts](./app/api/verify-proof/route.ts)
+*   **Testing Script:** [test-venice.js](./test-venice.js)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Feedback
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Building with the Smart Accounts Kit and 1Shot API was an incredible experience. The concept of advanced permissions and intent-based delegation completely transforms what is possible with Web3 dApps by removing friction for the end-user. 
+The developer experience with 1Shot was buttery smooth. The only minor feedback is that finding comprehensive documentation and examples for some of the newer features (like x402) could be slightly improved, but the core tools worked flawlessly!
+
+## Social Media
+
+Check out our demo and project thread on X!
+**[View our submission tweet here!](https://x.com/SOLANAdaddie/status/2066248799266165097)**
